@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFOBOT - Sign Up</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        .signup-container {
+            width: 360px;
+            padding: 30px;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+        .signup-container h1 {
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .signup-container input, .signup-container select {
+            width: calc(100% - 22px);
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .signup-container input:focus, .signup-container select:focus {
+            border-color: #6e8efb;
+            outline: none;
+        }
+        .signup-container button {
+            width: calc(100% - 22px);
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px 0;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .signup-container button:hover {
+            transform: scale(1.05);
+        }
+        .signup-container .signup-button {
+            background-color: #00bfff;
+        }
+        .signup-container .signup-button:hover {
+            background-color: #009acd;
+        }
+        .login-link {
+            margin-top: 15px;
+            display: block;
+        }
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h1>Sign Up</h1>
+        <form onsubmit="return signup()">
+            <select id="userType" required>
+                <option value="" disabled selected>Select your role</option>
+                <option value="parent">Parent</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+            </select>
+            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <button class="signup-button" type="submit">Sign Up</button>
+            <span class="login-link">Already have an account? <a href="login.html">Log in</a></span>
+        </form>
+    </div>
+
+    <script>
+        function signup() {
+            const userType = document.getElementById('userType').value;
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            
+            // Basic validation
+            if (userType && name && email && password && confirmPassword) {
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match.');
+                    return false;
+                }
+                // For demonstration purposes, just redirect to a confirmation page
+                alert('Sign-up successful! Redirecting...');
+                window.location.href = 'confirmation.html'; // Replace with the actual URL of your confirmation page
+                return false;
+            } else {
+                alert('Please fill out all fields.');
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>

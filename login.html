@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFOBOT - Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Center items horizontally */
+            align-items: center; /* Center items vertically */
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            position: relative;
+        }
+        .name-container {
+            position: absolute;
+            left: 480px; /* Space from the left edge */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ffffff;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        .login-container {
+            width: 360px;
+            padding: 30px;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+            position: absolute;
+            right: 20px; /* Space from the right edge */
+        }
+        .login-container h1 {
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .login-container input {
+            width: calc(100% - 22px);
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .login-container input:focus {
+            border-color: #6e8efb;
+            outline: none;
+        }
+        .login-container button {
+            width: calc(100% - 22px);
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px 0;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .login-container button:hover {
+            transform: scale(1.05);
+        }
+        .login-container .login-button {
+            background-color: #00bfff;
+        }
+        .login-container .login-button:hover {
+            background-color: #009acd;
+        }
+        .login-container .google-button {
+            background-color: #4285F4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container .google-button:hover {
+            background-color: #357ae8;
+        }
+        .login-container .google-button img {
+            width: 22px;
+            height: 22px;
+            margin-right: 10px;
+        }
+        .signup-link {
+            margin-top: 15px;
+            display: block;
+        }
+        .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="name-container">INFOBOT</div>
+    <div class="login-container">
+        <h1>INFOBOT</h1>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button class="login-button" onclick="login()">Login</button>
+        <button class="google-button" onclick="loginWithGoogle()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo"> Login with Google
+        </button>
+        <span class="signup-link">Don't have an account? <a href="signup.html">Sign up</a></span>
+    </div>
+
+    <script>
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            // Basic validation (replace with real authentication logic)
+            if (username && password) {
+                // For demonstration purposes, just redirect to the chatbot page
+                window.location.href = 'chatbot.html'; // Replace with the actual URL of your chatbot page
+            } else {
+                alert('Please enter both username and password.');
+            }
+        }
+
+        function loginWithGoogle() {
+            // Placeholder for Google login integration
+            alert('Google login is not implemented.');
+        }
+
+        // Handle Enter key press for login
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                login();
+            }
+        });
+    </script>
+</body>
+</html>

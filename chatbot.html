@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Interface</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            overflow: hidden; /* Prevent scrolling */
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: row; /* Change to row to fit info-panel and chat-content side by side */
+            height: 95vh;
+            width: 100%;
+            max-width: 1500px; /* Adjust max-width as needed */
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: absolute;
+            right: 20px; /* Distance from the right edge */
+        }
+        .info-panel {
+            width: 400px; /* Increase width to provide more space */
+            background: #f9f9f9;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .info-panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .info-panel p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        .chat-content {
+            flex: 1; /* Take up remaining space */
+            display: flex;
+            flex-direction: column;
+            position: relative; /* For positioning history button */
+        }
+        .chat-header {
+            padding: 15px;
+            background-color: #00bfff;
+            color: #fff;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            position: relative; /* For positioning history button */
+            display: flex;
+            justify-content: space-between; /* Space out the buttons */
+            align-items: center; /* Align items vertically center */
+        }
+        .kebab-menu-button, .media-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+            margin-left: 10px;
+        }
+        .kebab-menu-button:hover, .media-button:hover {
+            color: #e64a19;
+        }
+        .history-menu {
+            display: none; /* Initially hidden */
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .history-menu button {
+            background: none;
+            border: none;
+            color: #333;
+            padding: 10px 20px;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s;
+        }
+        .history-menu button:hover {
+            background-color: #f1f1f1;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 10px solid #ddd;
+        }
+        .message {
+            margin-bottom: 15px;
+        }
+        .message.user-message {
+            text-align: right;
+        }
+        .message .message-text {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message.user-message .message-text {
+            background-color: #00bfff;
+            color: #fff;
+        }
+        .message.bot-message .message-text {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background: #fff;
+            border-top: 1px solid #ddd;
+            align-items: center; /* Align items vertically center */
+        }
+        .chat-input textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .chat-input textarea:focus {
+            border-color: #00bfff;
+        }
+        .chat-input button, .chat-input .voice-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: #00bfff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+        .chat-input button:hover, .chat-input .voice-button:hover {
+            background-color: #009acd;
+        }
+        .voice-button {
+            background-color: #ff5722; /* A distinct color for the voice button */
+        }
+        .voice-button:hover {
+            background-color: #e64a19;
+        }
+        .history-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: none; /* Initially hidden */
+            overflow-y: auto;
+            z-index: 1000;
+            box-sizing: border-box; /* Include padding in width/height calculation */
+        }
+        .history-panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .history-panel .message {
+            margin-bottom: 10px;
+        }
+        .exit-button {
+            background-color: #ff5722;
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .exit-button:hover {
+            background-color: #e64a19;
+        }
+        /* Ensure good padding and margins on mobile */
+        @media (max-width: 600px) {
+            .chat-container {
+                flex-direction: column; /* Stack vertically on small screens */
+                width: 100%;
+                height: 90vh;
+                right: 10px; /* Adjust for smaller screens */
+            }
+            .info-panel {
+                width: 100%;
+                height: 200px; /* Adjust height as needed */
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+            .chat-content {
+                flex: 1; /* Allow chat-content to take the remaining space */
+            }
+            .history-panel {
+                width: 100%;
+                height: 100%;
+                top: 0;
+                right: 0;
+                z-index: 1000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="info-panel">
+            <h2>About This Bot</h2>
+            <p>This bot provides assistance with various topics related to our services. You can ask questions, request information, or get help with specific issues. Below are some of the types of queries you can make:</p>
+            <ul>
+                <li>General information</li>
+                <li>Product details</li>
+                <li>Technical support</li>
+                <li>Account-related questions</li>
+            </ul>
+        </div>
+        <div class="chat-content">
+            <div class="chat-header">
+                <button class="kebab-menu-button" onclick="toggleKebabMenu()">⋮</button>
+                Search Interface
+                <button class="media-button" onclick="openMedia()">📁</button>
+                <div class="history-menu" id="historyMenu">
+                    <button onclick="toggleHistory()">🕒 History</button>
+                </div>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <!-- Messages will appear here -->
+            </div>
+            <div class="chat-input">
+                <textarea id="userInput" placeholder="Type your query here..." rows="2"></textarea>
+                <button onclick="sendMessage()">Send</button>
+                <button class="voice-button" onclick="startVoiceInput()">🎤</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="history-panel" id="historyPanel">
+        <h2>
+            Chat History
+            <button class="exit-button" onclick="toggleHistory()">✖</button>
+        </h2>
+        <div id="historyContent">
+            <!-- History messages will appear here -->
+        </div>
+    </div>
+
+    <script>
+        const messages = []; // Array to store chat messages
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const chatBody = document.getElementById('chatBody');
+            const userMessage = userInput.value.trim();
+
+            if (userMessage) {
+                // Append user's message
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.className = 'message user-message';
+                userMessageDiv.innerHTML = `<div class="message-text">${userMessage}</div>`;
+                chatBody.appendChild(userMessageDiv);
+
+                // Save user's message to history
+                messages.push({ role: 'user', text: userMessage });
+
+                // Simulate a bot response
+                const botResponse = getBotResponse(userMessage);
+                const botMessageDiv = document.createElement('div');
+                botMessageDiv.className = 'message bot-message';
+                botMessageDiv.innerHTML = `<div class="message-text">${botResponse}</div>`;
+                chatBody.appendChild(botMessageDiv);
+
+                // Save bot's response to history
+                messages.push({ role: 'bot', text: botResponse });
+
+                // Scroll to the bottom
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+                // Clear input field
+                userInput.value = '';
+            }
+        }
+
+        function getBotResponse(userMessage) {
+            // Simple simulated bot responses
+            const responses = {
+                'hello': 'Hi there! How can I assist you today?',
+                'what is your name?': 'I am INFOBOT, your virtual assistant.',
+                'bye': 'Goodbye! Have a great day!',
+            };
+
+            return responses[userMessage.toLowerCase()] || 'I am not sure how to respond to that.';
+        }
+
+        function toggleHistory() {
+            const historyPanel = document.getElementById('historyPanel');
+            const isVisible = historyPanel.style.display === 'block';
+            historyPanel.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                showHistory();
+            }
+        }
+
+        function showHistory() {
+            const historyContent = document.getElementById('historyContent');
+            historyContent.innerHTML = ''; // Clear previous content
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${msg.role}-message`;
+                messageDiv.innerHTML = `<div class="message-text">${msg.text}</div>`;
+                historyContent.appendChild(messageDiv);
+            });
+        }
+
+        function toggleKebabMenu() {
+            const historyMenu = document.getElementById('historyMenu');
+            const isVisible = historyMenu.style.display === 'block';
+            historyMenu.style.display = isVisible ? 'none' : 'block';
+        }
+
+        function openMedia() {
+            alert('Media option clicked!'); // Replace with actual media functionality
+        }
+
+        // Handle Enter key press for sending messages
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function startVoiceInput() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('userInput').value = transcript;
+            };
+
+            recognition.onerror = function (event) {
+                console.error('Speech recognition error:', event.error);
+            };
+
+            recognition.start();
+        }
+    </script>
+</body>
+</html>
